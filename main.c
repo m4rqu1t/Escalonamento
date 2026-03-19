@@ -35,8 +35,55 @@ int main( int argc, char *argv[]){
 
     printf("TEMPO DEFINIDO : %d\n", tempoTotal);
 
+        int qtdTarefa = 0;
+
+        char tempNome[5];
+        int tempPeriodo, tempBurst;
+
+        while (fscanf(arquivo, "%4s %d %d", tempNome, &tempPeriodo, &tempBurst) == 3) {
+
+            qtdTarefa++;
+
+        }
+
+        tarefa *arrayTarefas = malloc(qtdTarefa * sizeof(tarefa));
+        if (arrayTarefas == NULL) {
+
+            printf("ERRO AO ALOCAR MEMORIA\n");
+            fclose(arquivo);
+            return 1;
+
+        }
 
 
+        rewind(arquivo);
+
+        fscanf(arquivo, "%d", &tempoTotal);
+
+        int i = 0;
+        while (fscanf(arquivo, "%4s %d %d",arrayTarefas[i].nome, &arrayTarefas[i].periodo, &arrayTarefas[i].cpuBurst) == 3) {
+
+            i++;
+
+        }
+
+        printf("MEMORIA ALOCADA PERFEITAMENTE PARA  %d TAREFAS!\n", qtdTarefa);
+
+
+
+
+        printf("--- TESTANDO ---\n");
+        for (int j = 0; j < qtdTarefa; j++) {
+
+            printf("Tarefa %d: Nome: %s | Periodo: %d | Burst: %d\n", j+1, arrayTarefas[j].nome, arrayTarefas[j].periodo, arrayTarefas[j].cpuBurst);
+
+                }
+        printf("---------------------------------------\n");
+
+
+
+        free(arrayTarefas);
+        fclose(arquivo);
 
     return 0;
 }
