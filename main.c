@@ -92,15 +92,67 @@ int main( int argc, char *argv[]){
 
 
 
-        printf("--- TESTANDO ---\n");
-        for (int j = 0; j < qtdTarefa; j++) {
+    printf("--- TESTANDO ---\n");
+    for (int j = 0; j < qtdTarefa; j++) {
 
-            printf("Tarefa %d: Nome: %s | Periodo: %d | Burst: %d\n", j+1, arrayTarefas[j].nome, arrayTarefas[j].periodo, arrayTarefas[j].cpuBurst);
+        printf("Tarefa %d: Nome: %s | Periodo: %d | Burst: %d\n", j+1, arrayTarefas[j].nome, arrayTarefas[j].periodo, arrayTarefas[j].cpuBurst);
 
+     }
+    printf("---------------------------------------\n");
+
+    for (int t = 0; t < tempoTotal; t++) {
+
+        for (int i = 0; i < qtdTarefa; i++) {
+
+            if (t > 0 && t == arrayTarefas[i].deadLineAtual) {
+
+                if (arrayTarefas[i].tempoRestante > 0) {
+
+                    arrayTarefas[i].deadLinesPerdidos++;
                 }
-        printf("---------------------------------------\n");
+
+                arrayTarefas[i].tempoRestante = arrayTarefas[i].cpuBurst;
+                arrayTarefas[i].deadLineAtual += arrayTarefas[i].periodo;
+
+            }
+        }
 
 
+        int tarefaEscolhida = -1;
+        int menorPeriodo = 9999999;
+
+        for (int i = 0; i < qtdTarefa; i++) {
+
+            if (arrayTarefas[i].tempoRestante > 0) {
+
+
+                if (arrayTarefas[i].periodo < menorPeriodo) {
+                    menorPeriodo = arrayTarefas[i].periodo;
+                    tarefaEscolhida = i;
+                }
+            }
+        }
+
+
+        if (tarefaEscolhida != -1) {
+
+            arrayTarefas[tarefaEscolhida].tempoRestante--;
+
+            printf("[t=%3d] %s executando. Faltam %d unidades.\n", t, arrayTarefas[tarefaEscolhida].nome, arrayTarefas[tarefaEscolhida].tempoRestante);
+
+            if (arrayTarefas[tarefaEscolhida].tempoRestante == 0) {
+
+                arrayTarefas[tarefaEscolhida].execucoesCompletas++;
+                 printf("[t=%3d] >>> %s FINALIZOU SEU PERIODO! <<<\n", t, arrayTarefas[tarefaEscolhida].nome);
+
+            }
+
+        } else {
+
+            printf("[t=%3d] CPU OCIOSA (IDLE)...\n", t);
+
+        }
+    }
 
         free(arrayTarefas);
         fclose(arquivo);
