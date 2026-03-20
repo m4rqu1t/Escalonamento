@@ -2,9 +2,16 @@
 #include <stdlib.h>
 
 typedef struct tarefa{
+
     char nome[5];
     int periodo;
     int cpuBurst;
+    int tempoRestante;
+    int deadLineAtual;
+    int execucoesCompletas;
+    int deadLinesPerdidos;
+    int morto;
+
 }tarefa;
 
 int main( int argc, char *argv[]){
@@ -40,35 +47,48 @@ int main( int argc, char *argv[]){
         char tempNome[5];
         int tempPeriodo, tempBurst;
 
-        while (fscanf(arquivo, "%4s %d %d", tempNome, &tempPeriodo, &tempBurst) == 3) {
+    while (fscanf(arquivo, "%4s %d %d", tempNome, &tempPeriodo, &tempBurst) == 3) {
 
-            qtdTarefa++;
+        qtdTarefa++;
 
-        }
+    }
 
-        tarefa *arrayTarefas = malloc(qtdTarefa * sizeof(tarefa));
-        if (arrayTarefas == NULL) {
+    tarefa *arrayTarefas = malloc(qtdTarefa * sizeof(tarefa));
+    if (arrayTarefas == NULL) {
 
-            printf("ERRO AO ALOCAR MEMORIA\n");
-            fclose(arquivo);
-            return 1;
+        printf("ERRO AO ALOCAR MEMORIA\n");
+        fclose(arquivo);
+        return 1;
 
-        }
+    }
 
 
-        rewind(arquivo);
+    rewind(arquivo);
 
-        fscanf(arquivo, "%d", &tempoTotal);
+    fscanf(arquivo, "%d", &tempoTotal);
 
-        int i = 0;
-        while (fscanf(arquivo, "%4s %d %d",arrayTarefas[i].nome, &arrayTarefas[i].periodo, &arrayTarefas[i].cpuBurst) == 3) {
+    int i = 0;
+    while (fscanf(arquivo, "%4s %d %d",arrayTarefas[i].nome, &arrayTarefas[i].periodo, &arrayTarefas[i].cpuBurst) == 3) {
 
-            i++;
+        i++;
 
-        }
+    }
 
-        printf("MEMORIA ALOCADA PERFEITAMENTE PARA  %d TAREFAS!\n", qtdTarefa);
+    printf("MEMORIA ALOCADA PERFEITAMENTE PARA  %d TAREFAS!\n", qtdTarefa);
 
+    for (int j = 0; j < qtdTarefa; j++) {
+
+        arrayTarefas[j].tempoRestante = arrayTarefas[j].cpuBurst;
+        arrayTarefas[j].deadLineAtual = arrayTarefas[j].periodo;
+        arrayTarefas[j].execucoesCompletas = 0;
+        arrayTarefas[j].deadLinesPerdidos = 0;
+        arrayTarefas[j].morto = 0;
+
+    }
+
+    for (int j = 0; j < qtdTarefa; j++) {
+        printf("Tarefa %s | Tempo Restante: %d | Deadline: %d\n", arrayTarefas[j].nome, arrayTarefas[j].tempoRestante, arrayTarefas[j].deadLineAtual);
+            }
 
 
 
