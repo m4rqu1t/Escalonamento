@@ -92,13 +92,15 @@ int main( int argc, char *argv[]){
 
 
 
-    printf("--- TESTANDO ---\n");
-    for (int j = 0; j < qtdTarefa; j++) {
+    FILE *saida = fopen("rate_maolf.out", "w");
+    if (saida == NULL) {
+        printf("ERRO AO CRIAR O ARQUIVO DE SAIDA\n");
+        return 1;
+    }
+    fprintf(saida, "EXECUTION BY RATE\n\n");
 
-        printf("Tarefa %d: Nome: %s | Periodo: %d | Burst: %d\n", j+1, arrayTarefas[j].nome, arrayTarefas[j].periodo, arrayTarefas[j].cpuBurst);
-
-     }
-    printf("---------------------------------------\n");
+    int tarefaEmExecucao = -1;
+    int tempoExecutado = 0;
 
     for (int t = 0; t < tempoTotal; t++) {
 
@@ -109,14 +111,19 @@ int main( int argc, char *argv[]){
                 if (arrayTarefas[i].tempoRestante > 0) {
 
                     arrayTarefas[i].deadLinesPerdidos++;
-                }
 
+                    if (i == tarefaEmExecucao) {
+
+                        fprintf(saida, "[%s] for %d units - L\n", arrayTarefas[i].nome, tempoExecutado);
+                        tempoExecutado = 0;
+                        tarefaEmExecucao = -1;
+
+                    }
+                }
                 arrayTarefas[i].tempoRestante = arrayTarefas[i].cpuBurst;
                 arrayTarefas[i].deadLineAtual += arrayTarefas[i].periodo;
-
             }
         }
-
 
         int tarefaEscolhida = -1;
         int menorPeriodo = 9999999;
@@ -125,37 +132,70 @@ int main( int argc, char *argv[]){
 
             if (arrayTarefas[i].tempoRestante > 0) {
 
-
                 if (arrayTarefas[i].periodo < menorPeriodo) {
+
                     menorPeriodo = arrayTarefas[i].periodo;
                     tarefaEscolhida = i;
+
                 }
             }
         }
 
+        if (tarefaEscolhida != tarefaEmExecucao) {
 
-        if (tarefaEscolhida != -1) {
+            if (tempoExecutado > 0) {
 
-            arrayTarefas[tarefaEscolhida].tempoRestante--;
+                if (tarefaEmExecucao == -1) {
 
-            printf("[t=%3d] %s executando. Faltam %d unidades.\n", t, arrayTarefas[tarefaEscolhida].nome, arrayTarefas[tarefaEscolhida].tempoRestante);
-
-            if (arrayTarefas[tarefaEscolhida].tempoRestante == 0) {
-
-                arrayTarefas[tarefaEscolhida].execucoesCompletas++;
-                 printf("[t=%3d] >>> %s FINALIZOU SEU PERIODO! <<<\n", t, arrayTarefas[tarefaEscolhida].nome);
-
+                    fprintf(saida, "idle for %d units\n", tempoExecutado);
+                } else {
+                    fprintf(saida, "[%s] for %d units - H\n", arrayTarefas[tarefaEmExecucao].nome, tempoExecutado);
+                }
             }
 
-        } else {
+            tarefaEmExecucao = tarefaEscolhida;
+            tempoExecutado = 0;
 
-            printf("[t=%3d] CPU OCIOSA (IDLE)...\n", t);
+        }
 
+        tempoExecutado++;
+
+        if (tarefaEmExecucao != -1) {
+
+            arrayTarefas[tarefaEmExecucao].tempoRestante--;
+
+            if (arrayTarefas[tarefaEmExecucao].tempoRestante == 0) {
+
+                arrayTarefas[tarefaEmExecucao].execucoesCompletas++;
+                fprintf(saida, "[%s] for %d units - F\n", arrayTarefas[tarefaEmExecucao].nome, tempoExecutado);
+                        tempoExecutado = 0;
+                        tarefaEmExecucao = -1;
+
+            }
+        }
+
+        if (t == tempoTotal - 1) {
+
+            if (tempoExecutado > 0) {
+
+                if (tarefaEmExecucao == -1) {
+
+                    fprintf(saida, "idle for %d units\n", tempoExecutado);
+
+                } else {
+
+                    fprintf(saida, "[%s] for %d units - K\n", arrayTarefas[tarefaEmExecucao].nome, tempoExecutado);
+                    arrayTarefas[tarefaEmExecucao].morto = 1;
+
+                }
+            }
         }
     }
 
+
+
         free(arrayTarefas);
         fclose(arquivo);
-
+        fclose(saida);
     return 0;
 }
