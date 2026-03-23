@@ -192,7 +192,27 @@ int main( int argc, char *argv[]){
         }
     }
 
+    fprintf(saida, "\nLOST DEADLINES\n");
+    for (int i = 0; i < qtdTarefa; i++) {
 
+        fprintf(saida, "[%s] %d\n", arrayTarefas[i].nome, arrayTarefas[i].deadLinesPerdidos);
+
+    }
+
+    fprintf(saida, "\nCOMPLETE EXECUTION\n");
+    for (int i = 0; i < qtdTarefa; i++) {
+
+        fprintf(saida, "[%s] %d\n", arrayTarefas[i].nome, arrayTarefas[i].execucoesCompletas);
+
+        }
+
+    fprintf(saida, "\nKILLED\n");
+
+    for (int i = 0; i < qtdTarefa; i++) {
+
+        fprintf(saida, "[%s] %d\n", arrayTarefas[i].nome, arrayTarefas[i].morto);
+
+        }
 
         free(arrayTarefas);
         fclose(arquivo);
