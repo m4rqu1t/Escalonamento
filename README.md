@@ -40,12 +40,14 @@ Após compilar, execute o programa passando o arquivo .txt de entrada como argum
 ```bash
 
 ./rate entrada.txt
-### ou
+
+    ou
+    
 ./edf entrada.txt
 
-## Formato de Entrada e Saída
-
 ```
+
+## Formato de Entrada e Saída
 
 ### Arquivo de Entrada (.txt)
 
