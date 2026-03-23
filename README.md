@@ -24,26 +24,28 @@ Abra o terminal na raiz do projeto e utilize um dos comandos abaixo:
 
 ```bash
     Para compilar o algoritmo Rate-Monotonic (gera o executável ./rate)
-make rate
+            make rate
 
     Para compilar o algoritmo Earliest-Deadline-First (gera o executável ./edf)
-make edf
+            make edf
 
     Para limpar os arquivos compilados e arquivos de saída (.out)
-make clean
+            make clean
 
 ```
 
 ### 2. Execução
 
 Após compilar, execute o programa passando o arquivo .txt de entrada como argumento:
-Bash
+```bash
 
 ./rate entrada.txt
-# ou
+### ou
 ./edf entrada.txt
 
 ## Formato de Entrada e Saída
+
+```
 
 ### Arquivo de Entrada (.txt)
 
@@ -74,4 +76,4 @@ K (Killed): Tarefa foi abortada pelo fim do tempo de simulação.
 O final do arquivo apresenta um consolidado estatístico das categorias LOST DEADLINES, COMPLETE EXECUTION e KILLED.
 
 
-*Marco Aurélio (m4rqu1t) Estudante de Ciência da Computação - CESAR School*
+**Marco Aurélio (m4rqu1t) Estudante de Ciência da Computação - CESAR School**
