@@ -90,14 +90,25 @@ int main( int argc, char *argv[]){
         printf("Tarefa %s | Tempo Restante: %d | Deadline: %d\n", arrayTarefas[j].nome, arrayTarefas[j].tempoRestante, arrayTarefas[j].deadLineAtual);
             }
 
+    char nomeArquivoSaida[50];
+
+    #ifdef ALGO_EDF
+        sprintf(nomeArquivoSaida, "edf_maolf.out");
+    #else
+        sprintf(nomeArquivoSaida, "rate_maolf.out");
+    #endif
 
 
-    FILE *saida = fopen("rate_maolf.out", "w");
+    FILE *saida = fopen(nomeArquivoSaida, "w");
     if (saida == NULL) {
         printf("ERRO AO CRIAR O ARQUIVO DE SAIDA\n");
         return 1;
     }
-    fprintf(saida, "EXECUTION BY RATE\n\n");
+    #ifdef ALGO_EDF
+        fprintf(saida, "EXECUTION BY EDF\n\n");
+    #else
+        fprintf(saida, "EXECUTION BY RATE\n\n");
+    #endif
 
     int tarefaEmExecucao = -1;
     int tempoExecutado = 0;
@@ -126,15 +137,27 @@ int main( int argc, char *argv[]){
         }
 
         int tarefaEscolhida = -1;
-        int menorPeriodo = 9999999;
+        int menorValor = 9999999;
 
         for (int i = 0; i < qtdTarefa; i++) {
 
             if (arrayTarefas[i].tempoRestante > 0) {
 
-                if (arrayTarefas[i].periodo < menorPeriodo) {
+                #ifdef ALGO_EDF
+                    if (arrayTarefas[i].deadLineAtual < menorValor) {
+                        menorValor = arrayTarefas[i].deadLineAtual;
+                        tarefaEscolhida = i;
+                    }
+                #else
+                    if (arrayTarefas[i].periodo < menorValor) {
+                        menorValor = arrayTarefas[i].periodo;
+                        tarefaEscolhida = i;
+                    }
+                #endif
 
-                    menorPeriodo = arrayTarefas[i].periodo;
+                if (arrayTarefas[i].periodo < menorValor) {
+
+                    menorValor = arrayTarefas[i].periodo;
                     tarefaEscolhida = i;
 
                 }
